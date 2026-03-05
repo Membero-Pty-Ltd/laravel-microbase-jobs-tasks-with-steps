@@ -1,0 +1,26 @@
+<?php
+
+namespace App\Http\Middleware;
+
+use App\Models\Access;
+use Closure;
+use Illuminate\Http\Request;
+
+class AccessRoleCreate
+{
+    public function handle(Request $request, Closure $next)
+    {
+        $user = $request->user();
+
+        // Only Access tokens are valid
+        if (!$user instanceof Access) {
+            return response()->json(['ok' => false, 'error' => 'Wrong object type'], 403);
+        }
+
+        if ($user->role !== 'create') {
+            return response()->json(['ok' => false, 'error' => 'Wrong access role'], 403);
+        }
+
+        return $next($request);
+    }
+}
