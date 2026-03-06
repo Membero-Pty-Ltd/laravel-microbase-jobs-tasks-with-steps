@@ -1,0 +1,587 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "laravel-microbase-jobs-tasks-with-steps API",
+    "version": "1.0.0",
+    "description": "OpenAPI specification generated from the current Laravel routes, middleware,\ncontroller validation, and tested response shapes.\n"
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:8080",
+      "description": "Local multi-service host example"
+    },
+    {
+      "url": "http://0.0.0.0:80",
+      "description": "Standalone Docker binding example"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "Sanctum Token"
+      }
+    },
+    "schemas": {
+      "PublicHelloResponse": {
+        "type": "object",
+        "required": [
+          "ok",
+          "message"
+        ],
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "const": true
+          },
+          "message": {
+            "type": "string",
+            "example": "hello"
+          }
+        }
+      },
+      "RoleHelloResponse": {
+        "type": "object",
+        "required": [
+          "ok",
+          "message",
+          "role"
+        ],
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "const": true
+          },
+          "message": {
+            "type": "string",
+            "example": "hello"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "create",
+              "create-mirror",
+              "mirror"
+            ]
+          }
+        }
+      },
+      "ForbiddenResponse": {
+        "type": "object",
+        "required": [
+          "ok",
+          "error"
+        ],
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "const": false
+          },
+          "error": {
+            "type": "string",
+            "example": "Wrong access role"
+          }
+        }
+      },
+      "NotFoundResponse": {
+        "type": "object",
+        "required": [
+          "ok",
+          "error",
+          "path"
+        ],
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "const": false
+          },
+          "error": {
+            "type": "string",
+            "example": "Not Found"
+          },
+          "path": {
+            "type": "string",
+            "example": "api/mirror/donkey"
+          }
+        }
+      },
+      "ValidationErrorResponse": {
+        "type": "object",
+        "required": [
+          "message",
+          "errors"
+        ],
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "The hash field must be 26 characters."
+          },
+          "errors": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "UnauthenticatedResponse": {
+        "type": "object",
+        "required": [
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Unauthenticated."
+          }
+        }
+      },
+      "PilotTaskCreateResponse": {
+        "type": "object",
+        "required": [
+          "ok",
+          "hash"
+        ],
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "const": true
+          },
+          "hash": {
+            "type": "string",
+            "minLength": 26,
+            "maxLength": 26,
+            "example": "01ARZ3NDEKTSV4RRFFQ69G5FAV"
+          }
+        }
+      },
+      "TaskType": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "code": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "default_retries": {
+            "type": "integer"
+          },
+          "default_queue": {
+            "type": "string"
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "payload": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "is_enabled": {
+            "type": "boolean"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Task": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "started_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "finished_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "hash": {
+            "type": "string",
+            "minLength": 26,
+            "maxLength": 26
+          },
+          "task_type_id": {
+            "type": "integer"
+          },
+          "access_id": {
+            "type": "integer",
+            "nullable": true
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "create",
+              "mirror"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "queued",
+              "running",
+              "success",
+              "failed",
+              "canceled"
+            ]
+          },
+          "step": {
+            "type": "string",
+            "nullable": true
+          },
+          "progress": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "payload": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "result": {
+            "type": "object",
+            "nullable": true,
+            "additionalProperties": true
+          },
+          "error": {
+            "type": "object",
+            "nullable": true,
+            "additionalProperties": true
+          },
+          "task_type": {
+            "$ref": "#/components/schemas/TaskType"
+          }
+        }
+      },
+      "PilotTaskShowResponse": {
+        "type": "object",
+        "required": [
+          "ok",
+          "task"
+        ],
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "const": true
+          },
+          "task": {
+            "$ref": "#/components/schemas/Task"
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/api/hello": {
+      "get": {
+        "summary": "Public hello endpoint",
+        "responses": {
+          "200": {
+            "description": "Public JSON heartbeat",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicHelloResponse"
+                },
+                "example": {
+                  "ok": true,
+                  "message": "hello"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/create/hello": {
+      "get": {
+        "summary": "Hello for create role",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized for create role",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/RoleHelloResponse"
+                    }
+                  ]
+                },
+                "example": {
+                  "ok": true,
+                  "message": "hello",
+                  "role": "create"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthenticatedResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Wrong access role",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/create-mirror/hello": {
+      "get": {
+        "summary": "Hello for create-mirror role",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized for create-mirror role",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoleHelloResponse"
+                },
+                "example": {
+                  "ok": true,
+                  "message": "hello",
+                  "role": "create-mirror"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthenticatedResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Wrong access role",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/mirror/hello": {
+      "get": {
+        "summary": "Hello for mirror role",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized for mirror role",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoleHelloResponse"
+                },
+                "example": {
+                  "ok": true,
+                  "message": "hello",
+                  "role": "mirror"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthenticatedResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Wrong access role",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/pilot-task-test": {
+      "post": {
+        "summary": "Create a pilot task test",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Task queued",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PilotTaskCreateResponse"
+                },
+                "example": {
+                  "ok": true,
+                  "hash": "01ARZ3NDEKTSV4RRFFQ69G5FAV"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthenticatedResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Fetch a task by hash",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "hash",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 26,
+              "maxLength": 26
+            },
+            "example": "01ARZ3NDEKTSV4RRFFQ69G5FAV"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Task returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PilotTaskShowResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthenticatedResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/{fallbackPath}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "fallbackPath",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "JSON fallback for unknown API routes",
+        "responses": {
+          "404": {
+            "description": "Route not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -94,8 +94,6 @@ This is basically a simplified task list
     - requires payload {hash: TASK HASH}
     - returns task row
 
-***UNTIL HERE THIS HAS BEEN BUILT AND TESTED***
-
 ### Automated tests & CI (required)
 
 - [x] We want repeatable automated verification locally and in GitHub CI.
@@ -149,3 +147,54 @@ Commands:
   - install dependencies
   - run migrations + seed
   - run php artisan test
+
+***UNTIL HERE THIS HAS BEEN BUILT AND TESTED***
+
+### Documentation Generation
+
+The system core has been implemented and verified.  
+Next step is to generate basic developer and testing documentation.
+
+#### Postman
+
+- [x] Prepare a Postman collection for API testing
+- [x] Include example requests for all endpoints
+- [x] Add descriptions and example payloads
+- [x] Include environment variables (base URL, tokens)
+
+#### OpenAPI
+
+- [x] Generate OpenAPI specification (YAML and/or JSON)
+- [x] Base it on existing routes and request validation
+- [x] Ensure it matches real API responses
+- [x] Store spec in /docs/openapi/
+
+#### Command Line
+
+- [x] Document available Artisan commands
+- [x] Explain the purpose and usage of:
+  - access:create
+  - any task/job related commands
+- [x] Provide example usage
+
+#### Database Documentation
+
+- [x] Generate documentation for database schema
+- [x] Include tables, fields, and relationships
+- [x] Briefly explain purpose of each table
+- [x] Store documentation in /docs/database.md
+
+#### README
+
+- [x] Update README.md
+- [x] Explain how to run the service:
+  - locally
+  - in Docker
+- [x] Provide example bindings:
+  - 0.0.0.0:80 (standalone service)
+  - 127.0.0.1:8080 (multi-service host)
+- [x] Link all documentation sections:
+  - Postman
+  - OpenAPI
+  - Database docs
+  - Command line usage

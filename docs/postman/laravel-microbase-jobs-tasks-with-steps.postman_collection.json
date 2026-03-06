@@ -1,0 +1,272 @@
+{
+  "info": {
+    "name": "laravel-microbase-jobs-tasks-with-steps",
+    "description": "API testing collection for the Laravel microbase project. Configure variables in the bundled environment before running authenticated requests.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8080"
+    },
+    {
+      "key": "create_token",
+      "value": ""
+    },
+    {
+      "key": "create_mirror_token",
+      "value": ""
+    },
+    {
+      "key": "mirror_token",
+      "value": ""
+    },
+    {
+      "key": "task_hash",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Public",
+      "item": [
+        {
+          "name": "GET /api/hello",
+          "request": {
+            "method": "GET",
+            "description": "Public heartbeat endpoint. No authentication required.",
+            "url": {
+              "raw": "{{base_url}}/api/hello",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "hello"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/hello",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "hello"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"ok\": true,\n  \"message\": \"hello\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Role hello",
+      "item": [
+        {
+          "name": "GET /api/create/hello",
+          "request": {
+            "method": "GET",
+            "description": "Requires Bearer token for Access role=create.",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{create_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/create/hello",
+              "host": ["{{base_url}}"],
+              "path": ["api", "create", "hello"]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"ok\": true,\n  \"message\": \"hello\",\n  \"role\": \"create\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "GET /api/create-mirror/hello",
+          "request": {
+            "method": "GET",
+            "description": "Requires Bearer token for Access role=create-mirror.",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{create_mirror_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/create-mirror/hello",
+              "host": ["{{base_url}}"],
+              "path": ["api", "create-mirror", "hello"]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"ok\": true,\n  \"message\": \"hello\",\n  \"role\": \"create-mirror\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "GET /api/mirror/hello",
+          "request": {
+            "method": "GET",
+            "description": "Requires Bearer token for Access role=mirror.",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{mirror_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/mirror/hello",
+              "host": ["{{base_url}}"],
+              "path": ["api", "mirror", "hello"]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"ok\": true,\n  \"message\": \"hello\",\n  \"role\": \"mirror\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Pilot task",
+      "item": [
+        {
+          "name": "POST /api/pilot-task-test",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.hash) { pm.collectionVariables.set('task_hash', json.hash); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "description": "Creates a pilot task. Works with any valid Access Bearer token.",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{create_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/pilot-task-test",
+              "host": ["{{base_url}}"],
+              "path": ["api", "pilot-task-test"]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"ok\": true,\n  \"hash\": \"01ARZ3NDEKTSV4RRFFQ69G5FAV\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "GET /api/pilot-task-test?hash=...",
+          "request": {
+            "method": "GET",
+            "description": "Fetches a task by hash. Use the task_hash collection variable or paste one manually.",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{create_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/pilot-task-test?hash={{task_hash}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "pilot-task-test"],
+              "query": [
+                {
+                  "key": "hash",
+                  "value": "{{task_hash}}",
+                  "description": "26-character task hash returned from POST /api/pilot-task-test"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"ok\": true,\n  \"task\": {\n    \"hash\": \"01ARZ3NDEKTSV4RRFFQ69G5FAV\",\n    \"status\": \"success\",\n    \"result\": {\n      \"ptt_step_one\": {},\n      \"ptt_step_two\": {},\n      \"ptt_step_three\": {}\n    }\n  }\n}"
+            },
+            {
+              "name": "422 Validation Error",
+              "status": "Unprocessable Entity",
+              "code": 422,
+              "body": "{\n  \"message\": \"The hash field must be 26 characters.\",\n  \"errors\": {\n    \"hash\": [\n      \"The hash field must be 26 characters.\"\n    ]\n  }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Fallback",
+      "item": [
+        {
+          "name": "GET /api/mirror/donkey",
+          "request": {
+            "method": "GET",
+            "description": "Demonstrates JSON fallback for unknown API route.",
+            "url": {
+              "raw": "{{base_url}}/api/mirror/donkey",
+              "host": ["{{base_url}}"],
+              "path": ["api", "mirror", "donkey"]
+            }
+          },
+          "response": [
+            {
+              "name": "404 Not Found",
+              "status": "Not Found",
+              "code": 404,
+              "body": "{\n  \"ok\": false,\n  \"error\": \"Not Found\",\n  \"path\": \"api/mirror/donkey\"\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
