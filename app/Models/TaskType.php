@@ -1,11 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 class TaskType extends Model
 {
+    /**
+     * @var list<string>
+     */
     protected $fillable = [
         'code',
         'description',
@@ -16,6 +21,9 @@ class TaskType extends Model
         'is_enabled',
     ];
 
+    /**
+     * @var array<string, string>
+     */
     protected $casts = [
         'steps' => 'array',
         'payload' => 'array',

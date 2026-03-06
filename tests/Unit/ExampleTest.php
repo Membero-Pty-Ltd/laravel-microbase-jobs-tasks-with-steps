@@ -6,11 +6,11 @@ use PHPUnit\Framework\TestCase;
 
 class ExampleTest extends TestCase
 {
-    /**
-     * A basic test example.
-     */
-    public function test_that_true_is_true(): void
+    public function test_basic_math_still_works(): void
     {
-        $this->assertTrue(true);
+        $left = 40;
+        $right = 2;
+
+        $this->assertSame(42, $left + $right);
     }
 }

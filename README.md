@@ -14,6 +14,7 @@ Lean Laravel API base with:
 - queue-driven step execution through `ProcessTaskJob`
 - pilot task example: `pilot-task-test`
 - feature tests and GitHub CI
+- quality gates for formatting, static analysis, tests, dependency audit, and docs presence checks
 
 ## API overview
 
@@ -78,6 +79,61 @@ php artisan db:seed --env=testing
 php artisan test
 ```
 
+## Quality and CI
+
+CI now checks five areas:
+
+- composer manifest validity
+- required docs / quality files presence
+- code style with Laravel Pint
+- static analysis with PHPStan + Larastan
+- feature tests with Laravel / PHPUnit
+
+Dependency audit is also executed in CI, but currently as **warning-only**. This is intentional for the first baseline so known or upstream ecosystem advisories do not block all delivery work while still remaining visible.
+
+### Recommended local commands
+
+```bash
+composer quality:docs
+composer quality:lint
+composer quality:analyse
+composer quality:test
+composer quality
+composer quality:audit
+```
+
+### Suggested local dev flow before commit / PR
+
+```bash
+composer quality:format
+composer quality
+```
+
+### Initial quality KPIs
+
+Visible / binary KPIs:
+
+- formatting pass/fail
+- static analysis pass/fail
+- tests pass/fail
+- dependency audit pass/fail or warning
+
+Additional simple indicators currently available:
+
+- PHPUnit test count in test output
+- PHPStan error count in analysis output
+- risky / skipped tests in PHPUnit output when present
+
+Coverage is intentionally not enabled in this first quality step to keep setup lean.
+
+### Configuration / workflow locations
+
+- workflow: [`.github/workflows/ci.yml`](.github/workflows/ci.yml)
+- Pint config: [`pint.json`](pint.json)
+- PHPStan config: [`phpstan.neon`](phpstan.neon)
+- docs presence check: [`scripts/check-docs.php`](scripts/check-docs.php)
+- composer scripts: [`composer.json`](composer.json)
+
 ## Documentation
 
 - [docs](docs/)
@@ -103,5 +159,5 @@ php artisan test
 ## Notes
 
 - `POST /api/pilot-task-test` creates a `tasks` row and dispatches `App\Jobs\ProcessTaskJob`
-- the pilot task type is seeded by [Database\Seeders\PilotTaskTestSeeder](database\seeders\PilotTaskTestSeeder.php)
+- the pilot task type is seeded by [`Database\Seeders\PilotTaskTestSeeder`](database/seeders/PilotTaskTestSeeder.php)
 - unknown API paths return JSON through API fallback instead of HTML

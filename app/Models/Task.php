@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -8,6 +10,9 @@ use Illuminate\Support\Str;
 
 class Task extends Model
 {
+    /**
+     * @var list<string>
+     */
     protected $fillable = [
         'started_at',
         'finished_at',
@@ -23,6 +28,9 @@ class Task extends Model
         'error',
     ];
 
+    /**
+     * @var array<string, string>
+     */
     protected $casts = [
         'started_at' => 'datetime',
         'finished_at' => 'datetime',
@@ -34,9 +42,8 @@ class Task extends Model
 
     protected static function booted(): void
     {
-        static::creating(function (self $task) {
-            if (empty($task->hash)) {
-                // ULID is 26 chars.
+        static::creating(static function (self $task): void {
+            if ($task->hash === null || $task->hash === '') {
                 $task->hash = (string) Str::ulid();
             }
         });

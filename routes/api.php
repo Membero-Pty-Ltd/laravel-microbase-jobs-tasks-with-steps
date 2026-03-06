@@ -1,48 +1,47 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
-use App\Http\Controllers\PilotTaskTestController;
+declare(strict_types=1);
 
-Route::get('/hello', function () {
+use App\Http\Controllers\PilotTaskTestController;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use Symfony\Component\HttpFoundation\Response;
+
+Route::get('/hello', static function (): JsonResponse {
     return response()->json(['ok' => true, 'message' => 'hello']);
 });
 
-// Pilot task test (any valid Sanctum Access)
-Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['auth:sanctum'])->group(function (): void {
     Route::post('/pilot-task-test', [PilotTaskTestController::class, 'create']);
     Route::get('/pilot-task-test', [PilotTaskTestController::class, 'show']);
 });
 
-// CREATE
 Route::prefix('create')
     ->middleware(['auth:sanctum', 'access.role.create'])
-    ->group(function () {
-        Route::get('/hello', function () {
+    ->group(function (): void {
+        Route::get('/hello', static function (): JsonResponse {
             return response()->json(['ok' => true, 'message' => 'hello', 'role' => 'create']);
         });
     });
 
-// CREATE-MIRROR
 Route::prefix('create-mirror')
     ->middleware(['auth:sanctum', 'access.role.create-mirror'])
-    ->group(function () {
-        Route::get('/hello', function () {
+    ->group(function (): void {
+        Route::get('/hello', static function (): JsonResponse {
             return response()->json(['ok' => true, 'message' => 'hello', 'role' => 'create-mirror']);
         });
     });
 
-// MIRROR
 Route::prefix('mirror')
     ->middleware(['auth:sanctum', 'access.role.mirror'])
-    ->group(function () {
-        Route::get('/hello', function () {
+    ->group(function (): void {
+        Route::get('/hello', static function (): JsonResponse {
             return response()->json(['ok' => true, 'message' => 'hello', 'role' => 'mirror']);
         });
     });
 
-Route::fallback(function (Request $request) {
+Route::fallback(static function (Request $request): JsonResponse {
     return response()->json([
         'ok' => false,
         'error' => 'Not Found',

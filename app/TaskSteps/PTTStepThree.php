@@ -15,7 +15,7 @@ class PTTStepThree implements TaskStep
 
         $result = $task->result ?? [];
         $result['ptt_step_three'] = [
-            'cmd' => 'du -hs ' . $path,
+            'cmd' => 'du -hs '.$path,
             'successful' => $process->successful(),
             'exit_code' => $process->exitCode(),
             'output' => trim($process->output()),

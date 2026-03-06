@@ -14,12 +14,14 @@
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
+        "larastan/larastan": "^3.1",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.24",
         "laravel/sail": "^1.41",
         "laravel/telescope": "^5.18",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
+        "phpstan/phpstan": "^2.1",
         "phpunit/phpunit": "^11.5.3"
     },
     "autoload": {
@@ -50,6 +52,32 @@
         "test": [
             "@php artisan config:clear --ansi",
             "@php artisan test"
+        ],
+        "quality:docs": [
+            "@php scripts/check-docs.php"
+        ],
+        "quality:format": [
+            "./vendor/bin/pint"
+        ],
+        "quality:lint": [
+            "./vendor/bin/pint --test"
+        ],
+        "quality:analyse": [
+            "./vendor/bin/phpstan analyse --memory-limit=512M"
+        ],
+        "quality:test": [
+            "@php artisan config:clear --ansi",
+            "@php artisan test"
+        ],
+        "quality:audit": [
+            "composer audit"
+        ],
+        "quality": [
+            "composer validate --strict",
+            "@quality:docs",
+            "@quality:lint",
+            "@quality:analyse",
+            "@quality:test"
         ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",

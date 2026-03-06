@@ -13,6 +13,7 @@ class AccessRoleHelloTest extends TestCase
     private function tokenForRole(string $role): string
     {
         $access = Access::factory()->role($role)->create();
+
         return $access->createToken('test')->plainTextToken;
     }
 

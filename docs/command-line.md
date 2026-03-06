@@ -1,6 +1,6 @@
 # Command line documentation
 
-This project uses Laravel Artisan for local administration, access provisioning, seeding, migrations, queue processing, and test execution.
+This project uses Laravel Artisan for local administration, access provisioning, seeding, migrations, queue processing, testing, and quality checks.
 
 ## Custom command
 
@@ -38,7 +38,7 @@ Notes:
 
 ## Queue and task processing
 
-The pilot task endpoint creates a `tasks` row and dispatches `App\\Jobs\\ProcessTaskJob` to the configured queue.
+The pilot task endpoint creates a `tasks` row and dispatches `App\Jobs\ProcessTaskJob` to the configured queue.
 
 ### Process one queued job
 
@@ -70,12 +70,12 @@ php artisan migrate
 php artisan db:seed
 ```
 
-This runs `Database\\Seeders\\DatabaseSeeder`, which currently includes `PilotTaskTestSeeder`.
+This runs `Database\Seeders\DatabaseSeeder`, which currently includes `PilotTaskTestSeeder`.
 
 ### Seed only pilot task type
 
 ```bash
-php artisan db:seed --class=Database\\Seeders\\PilotTaskTestSeeder
+php artisan db:seed --class=Database\Seeders\PilotTaskTestSeeder
 ```
 
 This creates or updates the `pilot-task-test` entry in `task_types`.
@@ -105,6 +105,60 @@ php artisan db:seed --env=testing
 ```bash
 php artisan test
 ```
+
+## Quality commands
+
+### Check required docs / quality files
+
+```bash
+composer quality:docs
+```
+
+### Auto-format code
+
+```bash
+composer quality:format
+```
+
+### Check formatting without changing files
+
+```bash
+composer quality:lint
+```
+
+### Run static analysis
+
+```bash
+composer quality:analyse
+```
+
+### Run tests through quality alias
+
+```bash
+composer quality:test
+```
+
+### Run the main local quality gate
+
+```bash
+composer quality
+```
+
+This runs:
+
+1. `composer validate --strict`
+2. docs / quality file check
+3. Pint in test mode
+4. PHPStan / Larastan
+5. Laravel / PHPUnit tests
+
+### Run dependency audit
+
+```bash
+composer quality:audit
+```
+
+At the current baseline this should be treated as a visible security signal and review point. In CI it is warning-only, not blocking.
 
 ## Helpful built-in Artisan commands for this project
 

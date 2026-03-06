@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Jobs;
 
 use App\Contracts\TaskStep;
@@ -11,15 +13,14 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
+use RuntimeException;
 use Throwable;
 
 class ProcessTaskJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public function __construct(public int $taskId)
-    {
-    }
+    public function __construct(public int $taskId) {}
 
     public function handle(): void
     {
@@ -34,12 +35,14 @@ class ProcessTaskJob implements ShouldQueue
         $task->started_at ??= now();
         $task->save();
 
+        /** @var array<int, class-string> $steps */
         $steps = Arr::wrap($task->taskType->steps ?? []);
         $total = max(count($steps), 1);
 
         try {
             foreach ($steps as $index => $stepClass) {
                 $task->refresh();
+
                 if ($task->status === 'canceled') {
                     return;
                 }
@@ -49,8 +52,9 @@ class ProcessTaskJob implements ShouldQueue
                 $task->save();
 
                 $step = app($stepClass);
-                if (!($step instanceof TaskStep)) {
-                    throw new \RuntimeException("Task step [$stepClass] must implement " . TaskStep::class);
+
+                if (! ($step instanceof TaskStep)) {
+                    throw new RuntimeException("Task step [{$stepClass}] must implement ".TaskStep::class);
                 }
 
                 $task = $step->handle($task);
@@ -74,11 +78,10 @@ class ProcessTaskJob implements ShouldQueue
             $task->finished_at = now();
             $task->error = [
                 'message' => $e->getMessage(),
-                'class' => get_class($e),
+                'class' => $e::class,
             ];
             $task->save();
 
-            // Re-throw so Laravel marks the job as failed (and can retry if configured).
             throw $e;
         }
     }

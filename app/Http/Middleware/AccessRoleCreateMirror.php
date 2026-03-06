@@ -12,7 +12,7 @@ class AccessRoleCreateMirror
     {
         $user = $request->user();
 
-        if (!$user instanceof Access) {
+        if (! $user instanceof Access) {
             return response()->json(['ok' => false, 'error' => 'Wrong object type'], 403);
         }
 

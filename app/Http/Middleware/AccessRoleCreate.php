@@ -13,7 +13,7 @@ class AccessRoleCreate
         $user = $request->user();
 
         // Only Access tokens are valid
-        if (!$user instanceof Access) {
+        if (! $user instanceof Access) {
             return response()->json(['ok' => false, 'error' => 'Wrong object type'], 403);
         }
 

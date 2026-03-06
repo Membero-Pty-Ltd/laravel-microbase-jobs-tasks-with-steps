@@ -14,6 +14,7 @@ class PilotTaskTest extends TestCase
     private function token(string $role = 'create'): string
     {
         $access = Access::factory()->role($role)->create();
+
         return $access->createToken('test')->plainTextToken;
     }
 
@@ -37,7 +38,7 @@ class PilotTaskTest extends TestCase
     public function test_pilot_task_can_be_created_and_processed(): void
     {
         // Seed the pilot task type (task_types row)
-        Artisan::call('db:seed', ['--class' => 'Database\\Seeders\\PilotTaskTestSeeder']);
+        Artisan::call('db:seed', ['--class' => 'Database\Seeders\PilotTaskTestSeeder']);
 
         $token = $this->token();
 
@@ -53,7 +54,7 @@ class PilotTaskTest extends TestCase
             '--tries' => 1,
         ]);
 
-        $get = $this->withToken($token)->getJson('/api/pilot-task-test?hash=' . $hash);
+        $get = $this->withToken($token)->getJson('/api/pilot-task-test?hash='.$hash);
         $get->assertOk()
             ->assertJson(['ok' => true])
             ->assertJsonPath('task.hash', $hash)

@@ -1,26 +1,33 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Jobs\ProcessTaskJob;
+use App\Models\Access;
 use App\Models\Task;
 use App\Models\TaskType;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class PilotTaskTestController extends Controller
 {
-    public function create(Request $request)
+    public function create(Request $request): JsonResponse
     {
-        /** @var \App\Models\Access $access */
         $access = $request->user();
+
+        if (! $access instanceof Access) {
+            throw new AccessDeniedHttpException('Authenticated Access token is required.');
+        }
 
         $taskType = TaskType::query()
             ->where('code', 'pilot-task-test')
             ->where('is_enabled', true)
             ->firstOrFail();
 
-        $role = in_array($access->role, ['mirror'], true) ? 'mirror' : 'create';
+        $role = $access->role === 'mirror' ? 'mirror' : 'create';
 
         $task = Task::query()->create([
             'task_type_id' => $taskType->id,
@@ -28,7 +35,7 @@ class PilotTaskTestController extends Controller
             'role' => $role,
             'status' => 'queued',
             'progress' => 0,
-            'payload' => (object) [],
+            'payload' => [],
             'result' => null,
             'error' => null,
         ]);
@@ -41,7 +48,7 @@ class PilotTaskTestController extends Controller
         ]);
     }
 
-    public function show(Request $request)
+    public function show(Request $request): JsonResponse
     {
         $data = $request->validate([
             'hash' => ['required', 'string', 'size:26'],

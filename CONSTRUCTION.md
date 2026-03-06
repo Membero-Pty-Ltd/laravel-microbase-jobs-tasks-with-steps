@@ -198,3 +198,91 @@ Next step is to generate basic developer and testing documentation.
   - Command line usage
 
   ***UNTIL HERE THIS HAS BEEN BUILT AND TESTED***
+
+### Build code quality layer and CI quality gates
+
+Goal: extend CI from “tests pass” into “tests + code quality + security + documentation consistency”.
+
+Implemented baseline:
+- Pint added as formatting gate (`pint.json`)
+- PHPStan + Larastan added with practical initial setup (`phpstan.neon`, level 5)
+- Composer scripts added for local quality workflow
+- CI extended with validate + docs presence + style + static analysis + tests + audit
+- dependency audit intentionally set as warning-only for now
+- README and command-line docs updated with local quality commands and KPI visibility
+
+#### Quality tools baseline
+
+- [x] Add Laravel Pint for code style checking
+- [x] Add PHPStan + Larastan for static analysis
+- [x] Add composer audit for dependency vulnerability checks
+- [x] Keep PHPUnit / artisan test in CI as blocking gate
+
+#### Quality configuration
+
+- [x] Add Pint configuration if needed
+- [x] Add phpstan.neon with initial practical level
+- [x] Configure analysis scope for app/, routes/, tests/ and relevant config
+- [x] Exclude only truly necessary paths
+- [x] Keep initial strictness realistic, avoid over-tightening at first step
+
+#### CI integration
+
+- [x] Extend GitHub Actions workflow to run:
+  - composer validate
+  - composer install
+  - Pint in test mode
+  - PHPStan/Larastan
+  - PHPUnit / artisan test
+  - composer audit
+- [x] Make style, static analysis and tests blocking
+- [x] Decide whether audit is blocking or warning-only
+- [x] Ensure CI uses testing environment consistently
+
+#### Quality KPIs
+
+- [x] Define initial project KPIs for quality checks
+- [x] Track at least:
+  - test pass/fail
+  - static analysis pass/fail
+  - formatting pass/fail
+  - dependency audit pass/fail
+- [x] Optionally track:
+  - PHPStan error count
+  - test count
+  - code coverage
+  - number of risky / skipped tests
+- [x] Keep KPI reporting simple and visible in README
+
+#### README quality section
+
+- [x] Update README with “Quality and CI” section
+- [x] Explain what is checked in CI
+- [x] Explain how to run all quality tools locally
+- [x] Add badges or simple status indicators if desired
+- [x] Link configuration files and workflow location
+
+#### Developer workflow
+
+- [x] Document local commands for formatting, static analysis and tests
+- [x] Clarify which tools are expected before commit / PR
+- [x] Keep workflow lean enough for daily use
+
+#### Optional future extensions
+
+- [ ] Consider coverage reporting
+- [ ] Consider Rector for assisted upgrades/refactoring
+- [ ] Consider OpenAPI/schema validation in CI
+- [ ] Consider doc drift checks between routes, tests and documentation
+
+#### CI quality jobs visibility
+
+- [x] Split CI into clearly named quality jobs / steps
+- [x] Make results visible separately, similar to tests
+- [x] At minimum show independent status for:
+  - formatting
+  - static analysis
+  - automated tests
+  - dependency audit
+- [x] Keep naming simple and stable so failures are immediately understandable
+

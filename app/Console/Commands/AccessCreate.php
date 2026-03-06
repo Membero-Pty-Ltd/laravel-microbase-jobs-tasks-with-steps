@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands;
 
 use App\Models\Access;
@@ -22,24 +24,24 @@ class AccessCreate extends Command
             'description' => $this->option('description'),
         ];
 
-        $v = Validator::make($data, [
+        $validator = Validator::make($data, [
             'role' => ['required', Rule::in(['create', 'create-mirror', 'mirror'])],
             'description' => ['required', 'string', 'max:70', 'unique:accesses,description'],
         ]);
 
-        if ($v->fails()) {
-            foreach ($v->errors()->all() as $err) {
-                $this->error($err);
+        if ($validator->fails()) {
+            foreach ($validator->errors()->all() as $error) {
+                $this->error($error);
             }
+
             return self::FAILURE;
         }
 
-        $access = Access::create([
-            'role' => $data['role'],
-            'description' => $data['description'],
+        $access = Access::query()->create([
+            'role' => (string) $data['role'],
+            'description' => (string) $data['description'],
         ]);
 
-        // Sanctum token (stored in personal_access_tokens)
         $plainTextToken = $access->createToken($access->description)->plainTextToken;
 
         $payload = [
@@ -49,7 +51,8 @@ class AccessCreate extends Command
             'token' => $plainTextToken,
         ];
 
-        $this->line(json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+        $this->line((string) json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+
         return self::SUCCESS;
     }
 }
