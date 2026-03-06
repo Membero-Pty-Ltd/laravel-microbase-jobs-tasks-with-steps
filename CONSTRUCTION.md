@@ -148,8 +148,6 @@ Commands:
   - run migrations + seed
   - run php artisan test
 
-***UNTIL HERE THIS HAS BEEN BUILT AND TESTED***
-
 ### Documentation Generation
 
 The system core has been implemented and verified.  
@@ -198,3 +196,5 @@ Next step is to generate basic developer and testing documentation.
   - OpenAPI
   - Database docs
   - Command line usage
+
+  ***UNTIL HERE THIS HAS BEEN BUILT AND TESTED***

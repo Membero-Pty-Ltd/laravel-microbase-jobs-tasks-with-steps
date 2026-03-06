@@ -80,26 +80,28 @@ php artisan test
 
 ## Documentation
 
+- [docs](docs/)
+
 ### Postman
 
-- collection: `docs/postman/laravel-microbase-jobs-tasks-with-steps.postman_collection.json`
-- environment: `docs/postman/laravel-microbase-jobs-tasks-with-steps.postman_environment.json`
+- [collection](docs/postman/laravel-microbase-jobs-tasks-with-steps.postman_collection.json)
+- [environment](docs/postman/laravel-microbase-jobs-tasks-with-steps.postman_environment.json)
 
 ### OpenAPI
 
-- YAML: `docs/openapi/openapi.yaml`
-- JSON: `docs/openapi/openapi.json`
+- [YAML](docs/openapi/openapi.yaml)
+- [JSON](docs/openapi/openapi.json)
 
 ### Database docs
 
-- `docs/database.md`
+- [docs/database.md](docs/database.md)
 
 ### Command line usage
 
-- `docs/command-line.md`
+- [docs/command-line.md](docs/command-line.md)
 
 ## Notes
 
 - `POST /api/pilot-task-test` creates a `tasks` row and dispatches `App\Jobs\ProcessTaskJob`
-- the pilot task type is seeded by `Database\Seeders\PilotTaskTestSeeder`
+- the pilot task type is seeded by [Database\Seeders\PilotTaskTestSeeder](database\seeders\PilotTaskTestSeeder.php)
 - unknown API paths return JSON through API fallback instead of HTML
