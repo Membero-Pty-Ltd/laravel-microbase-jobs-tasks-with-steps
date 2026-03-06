@@ -22,6 +22,6 @@ class AccessFactory extends Factory
 
     public function role(string $role): self
     {
-        return $this->state(fn () => ['role' => $role]);
+        return $this->state(fn (): array => ['role' => $role]);
     }
 }

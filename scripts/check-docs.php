@@ -14,6 +14,9 @@ $requiredFiles = [
     '.github/workflows/ci.yml',
     'phpstan.neon',
     'pint.json',
+    'rector.php',
+    'scripts/check-openapi.php',
+    'scripts/check-doc-drift.php',
 ];
 
 $missingFiles = array_values(array_filter(

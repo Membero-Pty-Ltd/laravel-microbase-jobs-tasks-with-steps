@@ -1,4 +1,4 @@
-# Construction docs | db-forge
+# Construction docs | laravel-microbase-jobs-tasks-with-steps
 
 This is basically a simplified task list
 
@@ -270,10 +270,16 @@ Implemented baseline:
 
 #### Optional future extensions
 
-- [ ] Consider coverage reporting
-- [ ] Consider Rector for assisted upgrades/refactoring
-- [ ] Consider OpenAPI/schema validation in CI
-- [ ] Consider doc drift checks between routes, tests and documentation
+Implemented resolution of the previously deferred items:
+- coverage reporting added as dedicated CI job + local command writing into `build/coverage/`
+- Rector added in the standard way through `require-dev`, `rector.php`, local composer scripts and dedicated CI dry-run check
+- OpenAPI/schema validation added through `scripts/check-openapi.php` and CI job
+- documentation drift checks added through `scripts/check-doc-drift.php` against routes, tests, README, Postman and OpenAPI
+
+- [x] Consider coverage reporting
+- [x] Consider Rector for assisted upgrades/refactoring
+- [x] Consider OpenAPI/schema validation in CI
+- [x] Consider doc drift checks between routes, tests and documentation
 
 #### CI quality jobs visibility
 

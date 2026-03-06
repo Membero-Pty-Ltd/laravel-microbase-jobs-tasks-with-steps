@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Access;
+use Database\Seeders\PilotTaskTestSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
@@ -38,7 +39,7 @@ class PilotTaskTest extends TestCase
     public function test_pilot_task_can_be_created_and_processed(): void
     {
         // Seed the pilot task type (task_types row)
-        Artisan::call('db:seed', ['--class' => 'Database\Seeders\PilotTaskTestSeeder']);
+        Artisan::call('db:seed', ['--class' => PilotTaskTestSeeder::class]);
 
         $token = $this->token();
 

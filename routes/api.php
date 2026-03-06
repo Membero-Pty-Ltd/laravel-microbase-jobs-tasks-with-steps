@@ -8,9 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\HttpFoundation\Response;
 
-Route::get('/hello', static function (): JsonResponse {
-    return response()->json(['ok' => true, 'message' => 'hello']);
-});
+Route::get('/hello', static fn (): JsonResponse => response()->json(['ok' => true, 'message' => 'hello']));
 
 Route::middleware(['auth:sanctum'])->group(function (): void {
     Route::post('/pilot-task-test', [PilotTaskTestController::class, 'create']);
@@ -20,31 +18,23 @@ Route::middleware(['auth:sanctum'])->group(function (): void {
 Route::prefix('create')
     ->middleware(['auth:sanctum', 'access.role.create'])
     ->group(function (): void {
-        Route::get('/hello', static function (): JsonResponse {
-            return response()->json(['ok' => true, 'message' => 'hello', 'role' => 'create']);
-        });
+        Route::get('/hello', static fn (): JsonResponse => response()->json(['ok' => true, 'message' => 'hello', 'role' => 'create']));
     });
 
 Route::prefix('create-mirror')
     ->middleware(['auth:sanctum', 'access.role.create-mirror'])
     ->group(function (): void {
-        Route::get('/hello', static function (): JsonResponse {
-            return response()->json(['ok' => true, 'message' => 'hello', 'role' => 'create-mirror']);
-        });
+        Route::get('/hello', static fn (): JsonResponse => response()->json(['ok' => true, 'message' => 'hello', 'role' => 'create-mirror']));
     });
 
 Route::prefix('mirror')
     ->middleware(['auth:sanctum', 'access.role.mirror'])
     ->group(function (): void {
-        Route::get('/hello', static function (): JsonResponse {
-            return response()->json(['ok' => true, 'message' => 'hello', 'role' => 'mirror']);
-        });
+        Route::get('/hello', static fn (): JsonResponse => response()->json(['ok' => true, 'message' => 'hello', 'role' => 'mirror']));
     });
 
-Route::fallback(static function (Request $request): JsonResponse {
-    return response()->json([
-        'ok' => false,
-        'error' => 'Not Found',
-        'path' => $request->path(),
-    ], Response::HTTP_NOT_FOUND);
-});
+Route::fallback(static fn (Request $request): JsonResponse => response()->json([
+    'ok' => false,
+    'error' => 'Not Found',
+    'path' => $request->path(),
+], Response::HTTP_NOT_FOUND));

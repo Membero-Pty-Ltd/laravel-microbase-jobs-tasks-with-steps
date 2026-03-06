@@ -32,6 +32,52 @@ jobs:
       - name: Check code style (Pint)
         run: composer quality:lint
 
+  documentation-integrity:
+    name: Documentation Integrity
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Validate OpenAPI files
+        run: composer quality:openapi
+
+      - name: Check route / tests / docs drift
+        run: composer quality:drift
+
+
+  rector:
+    name: Refactoring Rules (Rector)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Run Rector in dry-run mode
+        run: composer quality:refactor
+
   static-analysis:
     name: Static Analysis (PHPStan / Larastan)
     runs-on: ubuntu-latest
@@ -99,6 +145,48 @@ jobs:
 
       - name: Run tests
         run: composer quality:test
+
+  coverage:
+    name: Coverage Reporting
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, pdo_sqlite, sqlite3
+          coverage: xdebug
+
+      - name: Install dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Prepare SQLite database
+        run: |
+          mkdir -p database build/coverage
+          touch database/testing.sqlite
+
+      - name: Generate app key (testing)
+        run: php artisan key:generate --env=testing
+
+      - name: Migrate & seed (testing)
+        run: |
+          php artisan migrate --env=testing --force
+          php artisan db:seed --env=testing --force
+
+      - name: Generate coverage report
+        env:
+          XDEBUG_MODE: coverage
+        run: composer quality:coverage
+
+      - name: Upload coverage artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: build/coverage
 
   dependency-audit:
     name: Dependency Audit

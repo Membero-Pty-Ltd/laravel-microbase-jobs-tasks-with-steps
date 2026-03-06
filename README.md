@@ -14,7 +14,7 @@ Lean Laravel API base with:
 - queue-driven step execution through `ProcessTaskJob`
 - pilot task example: `pilot-task-test`
 - feature tests and GitHub CI
-- quality gates for formatting, static analysis, tests, dependency audit, and docs presence checks
+- quality gates for formatting, static analysis, tests, dependency audit, docs presence checks, OpenAPI validation, doc drift checks, and coverage reporting
 
 ## API overview
 
@@ -81,15 +81,18 @@ php artisan test
 
 ## Quality and CI
 
-CI now checks five areas:
+CI now checks these areas:
 
 - composer manifest validity
 - required docs / quality files presence
+- OpenAPI file integrity
+- drift between routes, tests, README, Postman and OpenAPI
 - code style with Laravel Pint
 - static analysis with PHPStan + Larastan
 - feature tests with Laravel / PHPUnit
+- coverage report generation and artifact upload
 
-Dependency audit is also executed in CI, but currently as **warning-only**. This is intentional for the first baseline so known or upstream ecosystem advisories do not block all delivery work while still remaining visible.
+Dependency audit is also executed in CI, but currently as **warning-only**. This is intentional for the first baseline so known or upstream ecosystem advisories do not block all delivery work while still remaining visible. Rector baseline has also been prepared with `rector.php`; it is intentionally not a blocking CI gate yet because the package is not pinned in the current lock refresh.
 
 ### Recommended local commands
 
@@ -97,7 +100,11 @@ Dependency audit is also executed in CI, but currently as **warning-only**. This
 composer quality:docs
 composer quality:lint
 composer quality:analyse
+composer quality:openapi
+composer quality:drift
 composer quality:test
+composer quality:coverage
+composer quality:refactor
 composer quality
 composer quality:audit
 ```
@@ -124,14 +131,19 @@ Additional simple indicators currently available:
 - PHPStan error count in analysis output
 - risky / skipped tests in PHPUnit output when present
 
-Coverage is intentionally not enabled in this first quality step to keep setup lean.
+Coverage is now available as a dedicated CI job and as a local command that writes Clover and text outputs into `build/coverage/`.
+
+Rector is scaffolded through `rector.php` and `composer quality:refactor`. In the current package it behaves as a non-failing helper until Rector is added during the next intentional `composer.lock` refresh.
 
 ### Configuration / workflow locations
 
 - workflow: [`.github/workflows/ci.yml`](.github/workflows/ci.yml)
 - Pint config: [`pint.json`](pint.json)
 - PHPStan config: [`phpstan.neon`](phpstan.neon)
+- Rector baseline: [`rector.php`](rector.php)
 - docs presence check: [`scripts/check-docs.php`](scripts/check-docs.php)
+- OpenAPI validation: [`scripts/check-openapi.php`](scripts/check-openapi.php)
+- drift check: [`scripts/check-doc-drift.php`](scripts/check-doc-drift.php)
 - composer scripts: [`composer.json`](composer.json)
 
 ## Documentation
@@ -161,3 +173,4 @@ Coverage is intentionally not enabled in this first quality step to keep setup l
 - `POST /api/pilot-task-test` creates a `tasks` row and dispatches `App\Jobs\ProcessTaskJob`
 - the pilot task type is seeded by [`Database\Seeders\PilotTaskTestSeeder`](database/seeders/PilotTaskTestSeeder.php)
 - unknown API paths return JSON through API fallback instead of HTML
+- constructed using lean way of [CONSTRUCTION](./CONSTRUCTION.md) and automated testing
