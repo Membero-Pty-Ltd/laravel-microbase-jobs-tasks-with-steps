@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/logo.png" width="180">
+</p>
+
 # laravel-microbase-jobs-tasks-with-steps
 
 [![CI](https://github.com/Membero-Pty-Ltd/laravel-microbase-jobs-tasks-with-steps/actions/workflows/ci.yml/badge.svg)](https://github.com/Membero-Pty-Ltd/laravel-microbase-jobs-tasks-with-steps/actions/workflows/ci.yml)
